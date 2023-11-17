@@ -4,6 +4,7 @@
  */
 package lab6p1_melvinrivas;
 
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -35,12 +36,19 @@ public class Lab6P1_MelvinRivas {
             }
             case 2: {
                 
-                System.out.print("Ingrese Un tamaño mayor o igual que 5: ");
-                int  tamaño  = input.nextInt();
-                
-                
+                System.out.print("Ingrese generacion del numero ");
+                int medida = input.nextInt();
+
+                if (5 > medida) {
+                    System.out.println("No puede ser menor que 5 >:( ");
+                } else {
+                    piramidemalhecha(medida);
+                    
                 System.out.print("Deseas volver al menu 0.Si o 1.No: ");
                 retorno = input.nextInt();
+                   
+                }
+    
                 break;
             }
             case 3: {
@@ -83,18 +91,22 @@ public class Lab6P1_MelvinRivas {
     }
     public static void Tablero () {
         
-        Scanner input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);    
+        Random random = new Random();
         
+        //inicio todo los 3 arrays 
+        //los zombies y el contador para la plantas (girasoles)
         char posicion1 [] = new char [20];
         char posicion2 [] = new char [20];
         char posicion3 [] = new char [20];
-        posicion1 [19] = 'Z';
-        posicion2 [19] = 'Z';
-        posicion3 [19] = 'Z';
+        char ultimo1 = posicion1 [19] = 'Z';
+        char ultimo2 = posicion2 [19] = 'Z';
+        char ultimo3 = posicion3 [19] = 'Z';
         int girasoles= 25;
         
         while  (posicion1[0]!='Z' && posicion2[0]!='Z' && posicion3[0]!='Z' ){
-        
+            
+            //aca hago el dibujo de los carriles de los zombies 
             System.out.println("Sus girasoles son: "+girasoles);
             System.out.print("A: ");
             for (int i = 0; i < 20; i++) {
@@ -112,13 +124,17 @@ public class Lab6P1_MelvinRivas {
                 System.out.print("["+posicion3[i]+"]");    
             }
             System.out.println("");
+            //salto de linea para que no salga pegado
             
+            //menu de acciones para el jugador 
             System.out.println("1. Agregar planta");
             System.out.println("2. No hacer nada");
             int  turnoj = input.nextInt();
             
+            //switch para determinar que quiere hacer el jugador
             switch (turnoj) {
                 case 1: {
+                    
                     System.out.println("Donde desea poner la planta (Ejemplo: 1:0) ");
                     String planta = input.nextLine();
                     planta=input.nextLine();
@@ -129,17 +145,19 @@ public class Lab6P1_MelvinRivas {
                         columna=columna-48;
                     }else if (columna==51){
                         columna=columna-48;
+                        //uso tabla ascii para decidir en que carril va a poner la planta
                     }else {
                     System.out.println("Los numeros ingresados no son validos");
-                    }
-                    
-                    System.out.println(columna);
-                    //1:10
+                    }//por si puno un valor que no sea 1,2,3
                     
                     String fila = planta.substring(2);
                     int fila2 = Integer.parseInt(fila);
                     System.out.println(fila2);
+                    //usamos integer.parseInt para combertir la cadena a numeros y poder
+                    //entrar al swtich
                     if(girasoles>=50){
+                    //validamos que tenga suficiente dinero (girasoles)
+                    //para poder plantar
                     switch (columna) {
                         case 1: {
                             posicion1[fila2]='P';
@@ -154,31 +172,106 @@ public class Lab6P1_MelvinRivas {
                             posicion3[fila2]= 'P';
           
                             break;
-                        }
+                        }//planta el girasol
                     }
-                    girasoles= girasoles - 50;
+                    girasoles= girasoles - 50;//se le resta por la compra
                     }else{
                         System.out.println("No tiene girasoles suficientes");
-                    }
+                    }//por si no le alcanza le tire validacion
                 }
                 case 2: {
                     System.out.println("Decidistes no hacer nada");
                     break;
                 }
-                case 3: {
+                default: {
+                    System.out.println("Numero invalido");
+                    break;//por si puso un numero que no era
+                }
+            }
+            //ccon el random decimos cual de los 3 zombies se va a mover 
+            int dado= random.nextInt(3);
+            System.out.println(dado);
+            switch (dado) {
+                case 0: {
+                   
+                    for (int i = 0; i < posicion1.length; i++) {
+                       ultimo1 = posicion1[i];
+                       if(ultimo1 == 90){
+                           posicion1[i-1]='Z';
+                       } 
+                    }
+                    break;
+                }
+                case 1: {
+                    
+                    for (int i = 0; i < posicion3.length; i++) {
+                       ultimo1 = posicion3[i];
+                       if(ultimo1 == 90){
+                           posicion3[i-1]='Z';
+                       }
+                    }
                     
                     break;
                 }
-                default: {
+                case 2: {
+                    
+                     for (int i = 0; i < posicion3.length; i++) {
+                       ultimo1 = posicion3[i];
+                       if(ultimo1 == 90){
+                           posicion3[i-1]='Z';
+                       }
+                    }
                     
                     break;
                 }
             }
             girasoles = girasoles +25;
-            
+            // al finalizar todo le damos 25 girasoles mas al jugador
         }
-            
+            if (posicion1[0]=='Z' || posicion2[0]=='Z' || posicion3[0]=='Z'){
+                System.out.println("Los zombies te comieron el cerebro");
+                System.out.println("Game over");
+            }else{
+                System.out.println("Has ganado enhorabuena");
+            }
+    }
+    
+    
+    public static void piramidemalhecha(int medida) {
+     for (int i = 0; i < medida; i++) {
+            int[] fila = Fila(i);
+            String filaString = fila2 (fila);
+            //nos imprime la fila 
+            System.out.println(filaString);
         }
+    }
+
+    // esto lo que hace es calcular para la piramide
+    public static int[] Fila(int fila) {
+        int[] resultado1 = new int[fila + 1];
+        resultado1[0] = 1;
+
+        
+        for (int i = 1; i < fila; i++) {
+           resultado1[i] = resultado1[i - 1] * (fila - i + 1) / i;
+        }
+        //con esto calculamos la fila 
+        resultado1[fila] = 1;
+
+        return resultado1;
+    }
+
+    // con esto hago el traigulo de asteriscos pero ahora con numeros
+    public static String fila2(int[] fila) {
+        String resultado2 = "";
+
+        for (int i : fila) {
+            resultado2 += i + " ";
+        }
+
+        return resultado2;
+    }
+    
         
     }
 
